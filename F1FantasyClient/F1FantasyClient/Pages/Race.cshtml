@@ -1,0 +1,32 @@
+﻿@page
+@model F1FantasyClient.Pages.RaceModel
+@{
+    ViewData["Title"] = "Race Results";
+}
+
+<main>
+    <div class="container p-4">
+        <h1 style="margin-bottom:20px;"><img src="@Model.GrandPrix["countryFlag"]["url"]" height="30" width="45"/> @Model.GrandPrix["name"]</h1>
+        <label style="margin-bottom:20px;" class="tablevalue">@Convert.ToDateTime(Model.GrandPrix["date"]).ToString("dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)</label>
+
+        <table style="margin-left:20px; margin-right:20px; width:100%" class="table table-striped">
+            <thead>
+                <tr>
+                    <td><label class="tableheader">Position</label></td>
+                    <td><label class="tableheader">Driver</label></td>
+                    <td><label class="tableheader">Points</label></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.GrandPrix["results"])
+                {
+                    <tr>
+                        <td><label class="tablevalue">@item["position"]</label></td>
+                        <td><label class="tablevalue">@item["racer"]["firstName"] @item["racer"]["lastName"]</label></td>
+                        <td><label class="tablevalue">@item["points"]</label></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</main>

@@ -1,0 +1,166 @@
+﻿@page
+@model F1FantasyClient.Pages.CreateTeamModel
+@{
+    ViewData["Title"] = "Create Team";
+}
+
+<partial name="_Notification" />
+@{
+    var prices = new double[Model.Racers.Count];
+    for (int i=0; i<Model.Racers.Count; i++)
+    {
+        prices[i] = double.Parse(Model.Racers[i]["price"].ToString());
+    }
+}
+
+<main>
+    <div class="container p-4">
+        <h1>@ViewData["Title"]</h1>
+        <br />
+
+        <form method="post"> 
+            <table style="border-collapse: separate; border-spacing: 10px 10px;">
+                <tr>
+                    <td><label style="font-weight:bold; font-size:x-large" for="name">Team name: </label></td>
+                    <td><input type="text" id="name" name="name" required/></td>
+                </tr>
+                <tr>
+                    <td><label style="font-size:x-large; font-weight:bold">Cash available: </label></td>
+                    <td><input type="text" style="font-size:x-large; color:green" id="cash" name="cash" value="$60 million" readonly/></td>
+                    <input type="text" hidden id="cashValue" name="cashValue" />
+                </tr>
+                <tr>
+                    <td colspan="2"><label style="font-weight:bold; font-size:x-large">Select your drivers: </label></td>
+                </tr>
+                <tr>
+                    <td align="center"><label for="driver1">Driver 1: </label></td>
+                    <td align="center"><label for="driver2">Driver 2: </label></td>
+                    <td align="center"><label for="driver3">Driver 3: </label></td>
+                </tr>
+                <tr>
+                    <td align="center"><img id="imagedriver1" src="@Model.Racers[0]["image"]["url"]" width="120" height="120" /></td>
+                    <td align="center"><img id="imagedriver2" src="@Model.Racers[0]["image"]["url"]" width="120" height="120" /></td>
+                    <td align="center"><img id="imagedriver3" src="@Model.Racers[0]["image"]["url"]" width="120" height="120" /></td>
+                </tr>
+                <tr>
+                    <td align="center"><select name="driver1" id="driver1" onchange="calculateRemaining(this, driver2, driver3, constructor1, constructor2); showImage(this)">
+                            @foreach (var item in Model.Racers)
+                            {
+                                <option value=@item["id"]>@item["firstName"] @item["lastName"] 
+                                    $@item["price"].ToString().Replace(',', '.')m</option>
+                            }
+                    </select></td>
+                    <td align="center"><select name="driver2" id="driver2" onchange="calculateRemaining(driver1, this, driver3, constructor1, constructor2); showImage(this)">
+                            @foreach (var item in Model.Racers)
+                            {
+                                <option value=@item["id"]>@item["firstName"] @item["lastName"] 
+                                    $@item["price"].ToString().Replace(',', '.')m</option>
+                            }
+                    </select></td>
+                    <td align="center"><select name="driver3" id="driver3" onchange="calculateRemaining(driver1, driver2, this, constructor1, constructor2); showImage(this)">
+                            @foreach (var item in Model.Racers)
+                            {
+                                <option value=@item["id"]>@item["firstName"] @item["lastName"] 
+                                    $@item["price"].ToString().Replace(',', '.')m</option>
+                            }
+                    </select></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><label style="font-weight:bold; font-size:x-large">Select your constructors: </label></td>
+                </tr>
+                <tr>
+                    <td align="center"><label for="constructor1">Constructor 1: </label></td>
+                    <td align="center"><label for="constructor2">Constructor 2: </label></td>
+                </tr>
+                <tr>
+                    <td align="center"><img id="imageconstructor1" src="@Model.Constructors[0]["logo"]["url"]" width="240" height="135" /></td>
+                    <td align="center"><img id="imageconstructor2" src="@Model.Constructors[0]["logo"]["url"]" width="240" height="135" /></td>
+                </tr>
+                <tr>
+                    <td align="center"><select name="constructor1" id="constructor1" onchange="calculateRemaining(driver1, driver2, driver3, this, constructor2); showImage(this)">
+                            @foreach (var item in Model.Constructors)
+                            {
+                                <option value=@item["id"]>@item["name"] $@item["price"].ToString().Replace(',', '.')m</option>
+                            }
+                    </select></td>
+                    <td align="center"><select name="constructor2" id="constructor2" onchange="calculateRemaining(driver1, driver2, driver3, constructor1, this); showImage(this)">
+                            @foreach (var item in Model.Constructors)
+                            {
+                                <option value=@item["id"]>@item["name"] $@item["price"].ToString().Replace(',', '.')m</option>
+                            }
+                    </select></td>
+                </tr>
+                <tr>
+                    <td><button class="btn btn-primary">Create</button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <script>
+        var pricesJs = [];
+        
+        @foreach (var item in Model.Racers)
+        {
+
+            @:pricesJs.push("@item["price"]");
+        }
+        @foreach (var item in Model.Constructors)
+        {
+            @:pricesJs.push("@item["price"]");
+        }
+
+        var racerImagesJs = [];
+        var constructorLogosJs = [];
+
+        @foreach (var item in Model.Racers)
+        {
+            Newtonsoft.Json.Linq.JObject urlObj = item["image"].ToObject<Newtonsoft.Json.Linq.JObject>();
+            var url = urlObj["url"].ToString();
+            @:racerImagesJs.push("@url");
+        }
+
+        @foreach (var item in Model.Constructors)
+        {
+
+            Newtonsoft.Json.Linq.JObject urlObj = item["logo"].ToObject<Newtonsoft.Json.Linq.JObject>();
+            var url = urlObj["url"].ToString();
+            @:constructorLogosJs.push("@url");
+        }
+
+        function calculateRemaining(driver1, driver2, driver3, constructor1, constructor2) {
+
+            var totalLeft;   
+            
+            value1 = Number(pricesJs[parseInt(driver1.value - 1)].toString().replace(",", "."));
+            value2 = Number(pricesJs[parseInt(driver2.value - 1)].toString().replace(",", "."));
+            value3 = Number(pricesJs[parseInt(driver3.value - 1)].toString().replace(",", "."));
+            value4 = Number(pricesJs[parseInt(constructor1.value - 1) + @Model.Racers.Count].toString().replace(",", "."));
+            value5 = Number(pricesJs[parseInt(constructor2.value - 1) + @Model.Racers.Count].toString().replace(",", "."));
+
+            totalLeft = 60 - value1 - value2 - value3 - value4 - value5;
+            document.getElementById("cash").value = '$' + totalLeft + ' million';
+            document.getElementById("cashValue").value = totalLeft;
+
+            if (totalLeft < 0) {
+                document.getElementById("cash").style.color = "red";
+            }
+            else {
+                document.getElementById("cash").style.color = "green";
+            }
+
+        }
+
+        function showImage(element) {
+
+            if (element.id.includes("driver")) {
+                document.getElementById("image" + element.id).src = racerImagesJs[parseInt(element.value - 1)];
+            }
+
+            if (element.id.includes("constructor")) {
+                document.getElementById("image" + element.id).src = constructorLogosJs[parseInt(element.value - 1)];
+            }
+        }
+
+    </script>
+</main>

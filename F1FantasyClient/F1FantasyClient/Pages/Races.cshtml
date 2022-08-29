@@ -1,0 +1,38 @@
+﻿@page
+@model F1FantasyClient.Pages.RacesModel
+@{
+}
+
+
+<main>
+    <div class="container p-4">
+        <h1 style="margin-bottom:20px;">Races: </h1>
+        <table style="margin-left:20px; margin-right:20px; width:100%" class="table table-striped">
+            <thead>
+                <tr>
+                    <td><label class="tableheader">Date</label></td>
+                    <td><label class="tableheader">Race</label></td>
+                    <td><label class="tableheader"></label></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Races)
+                {
+                    <tr>
+                        @{
+                            var itemDate = Convert.ToDateTime(item["date"]).ToString("dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                        }
+                        <td><label class="tablevalue">@itemDate</label></td>
+                        <td><label class="tablevalue"><img src="@item["countryFlag"]["url"]" height="15" width="20"> @item["country"]</label></td>
+                        <td align="center">
+                        <div class="w-25 btn-group">
+                            <a asp-page="Race" asp-route-id="@item["id"]" class="btn btn-success">Results</a>
+                        </div>
+                   </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</main>

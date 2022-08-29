@@ -1,0 +1,103 @@
+﻿@page
+@model F1FantasyClient.Pages.TeamModel
+@{
+    ViewData["Title"] = "View Team";
+}
+
+<main>
+    <div class="container p-4">
+        <table width="100%">
+            <tr>
+                <td><h1>@Model.Team["name"]</h1></td>
+            </tr>
+        </table>
+
+        <table style="margin-left:20px; margin-right:20px; border-collapse: separate; border-spacing: 10px 10px;">
+            <tr>
+                <td><label class="tableheader">Points: </label></td>
+                <td><label class="tablevalue">@Model.Team["points"]</label></td>
+            </tr>
+            <tr>
+                <td><label class="tableheader">Bought for: </label></td>
+                <td><label class="tablevalue">$@Model.Team["cost"].ToString().Replace(',','.') million</label></td>
+            </tr>
+            <tr>
+                <td><label class="tableheader">Current cost: </label></td>
+                <td><label class="tablevalue">$@Model.Team["currentCost"].ToString().Replace(',','.') million</label></td>
+            </tr>
+        </table>
+        <table style="margin-left:20px; margin-right:20px; border-collapse: separate; border-spacing: 10px 10px;">
+            <tr>
+                <td><label class="tableheader">Drivers: </label></td>
+            </tr>
+            <tr>
+                @for (int i = 0; i<3; i++)
+                {
+                    <td align="center">
+                         <label class="tablevalue">Driver @(i+1):</label>
+                    </td>
+                }
+            </tr>
+            <tr>
+                @foreach (var item in Model.Team["racers"])
+                {
+                    <td align="center"><img src="@item["image"]["url"]" width="120" height="120" /></td>
+                }
+            </tr>
+            <tr>
+                @foreach (var item in Model.Team["racers"])
+                {
+                    <td align="center"><label class="tablevalue">@item["firstName"] @item["lastName"]</label></td>
+                }
+            </tr>
+        </table>
+        <table style="margin-left:20px; margin-right:20px; border-collapse: separate; border-spacing: 10px 10px;">
+            <tr>
+                <td><label class="tableheader">Constructors: </label></td>
+            </tr>
+            <tr>
+                @for (int i = 0; i<2; i++)
+                {
+                    <td align="center">
+                         <label class="tablevalue">Constructor @(i+1):</label>
+                    </td>
+                }
+            </tr>
+            <tr>
+                @foreach (var item in Model.Team["constructors"])
+                {
+                    <td align="center"><img src="@item["logo"]["url"]" width="240" height="135" /></td>
+                }
+            </tr>
+            <tr>
+                @foreach (var item in Model.Team["constructors"])
+                {
+                    <td align="center"><label class="tablevalue">@item["name"]</label></td>
+                }
+            </tr>
+        </table>
+
+        <div style="margin-left:20px; margin-right:20px;">
+            <label class="tableheader">Grand Prix results: </label>
+            <table class="table table-striped" >
+                <thead>
+                    <tr>
+                        <td><label class="tableheader">Grand Prix</label></td>
+                        <td><label class="tableheader">Points</label></td>
+                    </tr>
+            </thead>
+            <tbody>
+                    @for (int i = 0; i<Model.Team["results"].Count(); i++)
+                    {
+                        <tr>
+                            <td><label class="tablevalue">@Model.TeamGrandPrix[i]["name"]</label></td>
+                            <td><label class="tablevalue">@Model.Team["results"][i]["points"]</label></td>
+                        </tr>
+                    }
+            </tbody>
+            </table>
+        </div>
+        
+
+    </div>
+</main>

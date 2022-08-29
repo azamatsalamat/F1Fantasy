@@ -1,0 +1,51 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<main>
+    <div class="container p-4">
+        <table width="100%" >
+            <tr>
+                <td><h1>Teams: </h1></td>
+                <td></td>
+                <td align="right"><a class="btn btn-primary" asp-page="/CreateTeam" type="button">Create new team</a></td>
+            </tr>
+        </table>
+
+        <table style="margin-left:20px; margin-right:20px; width:100%" class="table table-striped">
+            <thead>
+                <tr>
+                    <td><label class="tableheader">Rank</label></td>
+                    <td><label class="tableheader">Team name</label></td>
+                    <td><label class="tableheader">Points</label></td>
+                    <td><label class="tableheader">Bought for</label></td>
+                    <td><label class="tableheader">Current cost</label></td>
+                    <td></td>
+                </tr>
+            </thead>
+            @{
+                var rank = 1;
+            }
+            @foreach (var item in Model.Teams)
+            {
+                <tr>
+                    <td><label style="font-size:large">@rank</label></td>
+                    @{
+                        rank = rank + 1;
+                    }
+                    <td><label class="tablevalue">@item["name"]</label></td>
+                    <td><label class="tablevalue">@item["points"]</label></td>
+                    <td><label class="tablevalue">@item["cost"].ToString().Replace(',','.')</label></td>
+                    <td><label class="tablevalue">@item["currentCost"].ToString().Replace(',','.')</label></td>
+                    <td align="center">
+                       <div class="w-25 btn-group">
+                            <a asp-page="Team" asp-route-id="@item["id"]" class="btn btn-success">View</a>
+                       </div>
+                   </td>
+                </tr>
+            }
+        </table>
+    </div>
+</main>
